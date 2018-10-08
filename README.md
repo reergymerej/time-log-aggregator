@@ -11,7 +11,7 @@ un-patented Grizzle Format!
 ./index.js ./file.txt
 ```
 
-**module****
+**module**
 
 ```js
 const timeLog = require('time-log-aggregator')
