@@ -3,15 +3,12 @@
 const fs = require('fs')
 const path = require('path')
 
-// Read in file.
-const filepath = path.resolve(__dirname, 'file.txt')
-const file = fs.readFileSync(filepath, 'utf8')
 
 // Find lines with timestamp.
 const getTimes = (text) => {
   const times = []
   const regex = (/^\w{3} \w{3}\s+ \d{1,2} (\d{2}:\d{2}:\d{2}) \w{3} \d{4} (.+)/gm)
-  let matches = regex.exec(file)
+  let matches = regex.exec(text)
   while (matches) {
     const time = matches[1]
     const description = matches[2]
@@ -19,7 +16,7 @@ const getTimes = (text) => {
       time,
       description,
     })
-    matches = regex.exec(file)
+    matches = regex.exec(text)
   }
 
   return times
@@ -54,17 +51,21 @@ const getTimeRanges = (times) => {
   }, [])
 }
 
-const main = (filepath) => {
-  const times = getTimes(file)
-
-  // Print.
-  const timeRanges = getTimeRanges(times)
-  return timeRanges
+const extractTimeRanges = (text) => {
+  const times = getTimes(text)
+  return getTimeRanges(times)
 }
 
 if (require.main === module) {
-  const result = main(filepath)
+  let file
+  try {
+    file = fs.readFileSync(process.argv[2], 'utf8')
+  } catch (err) {
+    process.stdout.write(`unable to access file "${process.argv[2]}"`)
+    process.exit(1)
+  }
+  const result = extractTimeRanges(file)
   process.stdout.write(JSON.stringify(result, null, 2))
 } else {
-  module.exports = main
+  module.exports = extractTimeRanges
 }
