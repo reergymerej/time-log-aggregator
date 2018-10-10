@@ -1,7 +1,7 @@
 // Find lines with timestamp.
 const getTimes = (text) => {
   const times = []
-  const regex = (/^\w{3} \w{3}\s+ \d{1,2} (\d{2}:\d{2}:\d{2}) \w{3} \d{4} (.+)/gm)
+  const regex = (/^\w{3}\s+\w{3}\s+\d{1,2} (\d{2}:\d{2}:\d{2}) \w{3} \d{4} (.+)/gm)
   let matches = regex.exec(text)
   while (matches) {
     const time = matches[1]
