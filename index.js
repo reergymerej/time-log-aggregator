@@ -5,10 +5,23 @@ const path = require('path')
 const extractTimeRanges = require('./extractor')
 const aggregate = require('./aggregate')
 
-const main = (file) => {
+const summarize = (timeBlock) => `${timeBlock.description}: ${timeBlock.durationMinutes}`
+const print = (aggregated, totalDuration) => {
+  const summarized = aggregated.map(summarize)
+  const list = JSON.stringify(summarized, null, 2)
+  return `${list} \ntotal minutes: ${totalDuration}`
+}
+
+const main = (file, returnPrinted) => {
   const timeRanges = extractTimeRanges(file)
   const aggregated = aggregate(timeRanges)
-  return aggregated
+  if (returnPrinted) {
+    const durationSum = aggregated.reduce((accumulator, value) => accumulator + value.durationMinutes, 0)
+    const result = print(aggregated, durationSum)
+    return result
+  } else {
+    return aggregated
+  }
 }
 
 if (require.main === module) {
@@ -19,8 +32,8 @@ if (require.main === module) {
     process.stdout.write(`unable to access file "${process.argv[2]}"`)
     process.exit(1)
   }
-  const result = main(file)
-  process.stdout.write(JSON.stringify(result, null, 2))
+  const result = main(file, true)
+  process.stdout.write(result)
 } else {
   module.exports = main
 }

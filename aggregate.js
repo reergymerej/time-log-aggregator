@@ -31,12 +31,6 @@ const byDurationDesc = (a, b) => {
 
 const sortTimes = (times) => times.sort(byDurationDesc)
 
-const summarize = (timeBlock) => `${timeBlock.description}: ${timeBlock.durationMinutes}`
-
-const aggregate = (times) => {
-  const grouped = groupTimes(times)
-  return sortTimes(grouped)
-    .map(summarize)
-}
+const aggregate = (times) => sortTimes(groupTimes(times))
 
 module.exports = aggregate
